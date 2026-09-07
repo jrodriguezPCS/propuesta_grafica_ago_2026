@@ -23,7 +23,19 @@
       border:0; background:#ffffff22; color:#fff; border-radius:999px;
       padding:8px 12px; font-size:12px; cursor:pointer;
     }
-    .slide { display:block; width:100%; max-width:100%; height:auto; }
+    .stage { position:relative; width:100%; }
+    .slide {
+      display:block; width:100%; max-width:100%; height:auto;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-user-drag:none;
+      -webkit-touch-callout:none;
+    }
+    .shield {
+      position:absolute; inset:0; z-index:2;
+      background:transparent;
+    }
   </style>
 </head>
 <body>
@@ -31,7 +43,10 @@
     <strong>PCS For All<span>Propuesta Gráfica • Redes y Campañas</span></strong>
     <button type="button" id="fs">Pantalla completa</button>
   </header>
-  <img class="slide" id="slide" width="1920" height="9720" alt="Propuesta Gráfica PCS For All">
+  <div class="stage">
+    <img class="slide" id="slide" width="1920" height="9720" alt="" draggable="false">
+    <div class="shield" aria-hidden="true"></div>
+  </div>
   <script>
     const img = document.getElementById("slide");
     const candidates = [
@@ -44,6 +59,12 @@
       if (i < candidates.length) img.src = candidates[i];
     };
     img.src = candidates[0];
+
+    const block = (event) => event.preventDefault();
+    document.addEventListener("contextmenu", block);
+    document.addEventListener("dragstart", block);
+    document.addEventListener("selectstart", block);
+
     document.getElementById("fs").onclick = () => {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen();
       else document.exitFullscreen();
