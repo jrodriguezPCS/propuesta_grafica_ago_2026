@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b3a6e">
+  <title>Propuesta gráfica — PCSFORALL</title>
+  <meta name="description" content="Propuesta gráfica de redes y campañas para PCSFORALL. Pieza de 1920×9720 que se escala al ancho del dispositivo.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%230b3a6e' width='64' height='64' rx='12'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial Black,Arial' font-size='26' fill='white'%3Epc%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --navy: #0b3a6e;
+      --blue: #1d5fa8;
+      --sky: #d7ecf8;
+      --paper: #eef6fb;
+      --ink: #123054;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    body { overflow-x: hidden; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(11, 58, 110, 0.94);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+    header .brand {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    header .brand strong {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+    header .brand span {
+      font-size: 12px;
+      opacity: 0.85;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    header button {
+      border: 0;
+      background: #ffffff1f;
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    header button:hover { background: #ffffff33; }
+    .stage {
+      width: 100%;
+      line-height: 0;
+      font-size: 0;
+      background: #fff;
+    }
+    .stage img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+    .loader {
+      min-height: 50vh;
+      display: grid;
+      place-items: center;
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--navy);
+    }
+    .loader .bar {
+      width: min(280px, 70vw);
+      height: 4px;
+      background: #c5d9ea;
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 16px auto 0;
+    }
+    .loader .bar > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--blue);
+      transition: width .25s ease;
+    }
+    footer {
+      padding: 18px 16px 28px;
+      text-align: center;
+      font-size: 12px;
+      color: #4b6480;
+    }
+    @media print {
+      header, footer, .loader { display: none !important; }
+      .stage img { width: 100% !important; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <strong>PCSFORALL</strong>
+      <span>Propuesta gráfica · redes y campañas</span>
+    </div>
+    <button type="button" id="fs" aria-label="Pantalla completa">Pantalla completa</button>
+  </header>
+
+  <div class="loader" id="loader">
+    <div>
+      <p>Cargando propuesta…</p>
+      <div class="bar"><i id="progress"></i></div>
+    </div>
+  </div>
+
+  <main class="stage" id="stage" hidden></main>
+
+  <footer>
+    Javier Esteban Rodríguez Medina · Agosto 2026 · pieza 1920×9720 escalada al ancho del dispositivo
+  </footer>
+
+  <script>
+    const PARTS = [
+      "slices/parte-01.b64",
+      "slices/parte-02.b64",
+      "slices/parte-03.b64",
+      "slices/parte-04.b64",
+      "slices/parte-05.b64",
+      "slices/parte-06.b64"
+    ];
+
+    const stage = document.getElementById("stage");
+    const loader = document.getElementById("loader");
+    const progress = document.getElementById("progress");
+
+    async function load() {
+      let done = 0;
+      for (const path of PARTS) {
+        const res = await fetch(path, { cache: "force-cache" });
+        if (!res.ok) throw new Error("No se pudo cargar " + path);
+        const b64 = (await res.text()).trim();
+        const img = document.createElement("img");
+        img.src = "data:image/jpeg;base64," + b64;
+        img.alt = "";
+        img.width = 1920;
+        img.decoding = "async";
+        stage.appendChild(img);
+        done += 1;
+        progress.style.width = (done / PARTS.length * 100) + "%";
+      }
+      loader.hidden = true;
+      stage.hidden = false;
+    }
+
+    document.getElementById("fs").addEventListener("click", () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    });
+
+    load().catch((err) => {
+      loader.innerHTML = "<p>No se pudo cargar la propuesta. Abre esta página desde GitHub Pages.</p>";
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
