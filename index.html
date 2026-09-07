@@ -21,12 +21,7 @@
       border:0; background:#ffffff22; color:#fff; border-radius:999px;
       padding:8px 12px; font-size:12px; cursor:pointer;
     }
-    .slide {
-      display:block;
-      width:100%;
-      max-width:100%;
-      height:auto;
-    }
+    .slide { display:block; width:100%; max-width:100%; height:auto; }
     footer { padding:16px; text-align:center; font-size:12px; color:#4b6480; }
   </style>
 </head>
@@ -35,9 +30,20 @@
     <strong>PCSFORALL<span>Propuesta gráfica · redes y campañas</span></strong>
     <button type="button" id="fs">Pantalla completa</button>
   </header>
-  <img class="slide" src="slides/propuesta-grafica.jpg" width="1920" height="9720" alt="Propuesta gráfica PCSFORALL — redes y campañas">
-  <footer>Javier Esteban Rodríguez Medina · Agosto 2026 · 1920×9720 escalada al 100% del ancho</footer>
+  <img class="slide" id="slide" width="1920" height="9720" alt="Propuesta gráfica PCSFORALL">
+  <footer>Javier Esteban Rodríguez Medina · Agosto 2026 · 1920×9720 al 100% del ancho</footer>
   <script>
+    const img = document.getElementById("slide");
+    const candidates = [
+      "slides/propuesta-grafica.jpg",
+      "slides/slides/propuesta-grafica.jpg"
+    ];
+    let i = 0;
+    img.onerror = () => {
+      i += 1;
+      if (i < candidates.length) img.src = candidates[i];
+    };
+    img.src = candidates[0];
     document.getElementById("fs").onclick = () => {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen();
       else document.exitFullscreen();
