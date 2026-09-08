@@ -5,39 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0767B1">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <title>PCS For All — Propuesta Gráfica</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="favicon.svg">
   <style>
-    :root { --navy:#0b3a6e; --paper:#e8f3fb; }
     * { box-sizing:border-box; margin:0; padding:0; }
-    html, body { width:100%; background:var(--paper); overflow-x:hidden; font-family:Inter,system-ui,sans-serif; }
-    header {
-      position:sticky; top:0; z-index:10;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding:10px 16px;
-      background:rgba(11,58,110,.94); color:#fff;
-    }
-    header strong { font-size:14px; letter-spacing:0; font-weight:700; }
-    header span { display:block; font-size:12px; opacity:.85; font-weight:400; letter-spacing:0; }
-    header button {
-      border:0; background:#ffffff22; color:#fff; border-radius:999px;
-      padding:8px 12px; font-size:12px; cursor:pointer;
-    }
+    html, body { width:100%; background:#e8f3fb; overflow-x:hidden; font-family:Inter,system-ui,sans-serif; }
+    header { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px; background:rgba(11,58,110,.94); color:#fff; }
+    header strong { font-size:14px; }
+    header span { display:block; font-size:12px; opacity:.85; font-weight:400; }
+    header button { border:0; background:#ffffff22; color:#fff; border-radius:999px; padding:8px 12px; font-size:12px; cursor:pointer; }
     .stage { position:relative; width:100%; line-height:0; min-height:70vh; }
-    .slide {
-      display:block; width:100%; max-width:100%; height:auto;
-      pointer-events:none;
-      user-select:none;
-      -webkit-user-select:none;
-      -webkit-user-drag:none;
-      -webkit-touch-callout:none;
-    }
-    .shield { position:absolute; inset:0; z-index:2; background:transparent; }
-    .status {
-      padding:48px 24px; text-align:center; color:#0b3a6e; font-size:14px; line-height:1.5;
-    }
+    .slide { display:block; width:100%; height:auto; pointer-events:none; user-select:none; }
+    .shield { position:absolute; inset:0; z-index:2; }
+    .status { padding:48px 24px; text-align:center; color:#0b3a6e; font-size:14px; line-height:1.5; }
   </style>
 </head>
 <body>
@@ -50,23 +30,22 @@
     <div class="shield" aria-hidden="true"></div>
   </div>
   <script>
-    const VERSION = "20260908d";
+    const VERSION = "20260908e";
     const parts = [
       ["slides/v4/p01_0.txt"],
-      ["slides/v4/p02_0.txt", "slides/v4/p02_1.txt"],
-      ["slides/v4/p03_0.txt", "slides/v4/p03_1.txt"],
-      ["slides/v4/p04_0.txt", "slides/v4/p04_1.txt", "slides/v4/p04_2.txt"],
-      ["slides/v4/p05_0.txt", "slides/v4/p05_1.txt"],
-      ["slides/v4/p06_0.txt", "slides/v4/p06_1.txt", "slides/v4/p06_2.txt"],
-      ["slides/v4/p07_0.txt", "slides/v4/p07_1.txt", "slides/v4/p07_2.txt"],
-      ["slides/v4/p08_0.txt", "slides/v4/p08_1.txt", "slides/v4/p08_2.txt"],
-      ["slides/v4/p09_0.txt", "slides/v4/p09_1.txt"],
+      ["slides/v4/p02_0.txt","slides/v4/p02_1.txt"],
+      ["slides/v4/p03_0.txt","slides/v4/p03_1.txt","slides/v4/p03_2.txt"],
+      ["slides/v4/p04_0.txt","slides/v4/p04_1.txt","slides/v4/p04_2.txt"],
+      ["slides/v4/p05_0.txt","slides/v4/p05_1.txt"],
+      ["slides/v4/p06_0.txt","slides/v4/p06_1.txt","slides/v4/p06_2.txt"],
+      ["slides/v4/p07_0.txt","slides/v4/p07_1.txt","slides/v4/p07_2.txt"],
+      ["slides/v4/p08_0.txt","slides/v4/p08_1.txt","slides/v4/p08_2.txt"],
+      ["slides/v4/p09_0.txt","slides/v4/p09_1.txt"],
       ["slides/v4/p10_0.txt"]
     ];
     const stage = document.getElementById("stage");
     const shield = stage.querySelector(".shield");
     const status = document.getElementById("status");
-
     Promise.all(parts.map((group) =>
       Promise.all(group.map((src) =>
         fetch(src + "?v=" + VERSION, { cache: "no-store" }).then((r) => {
@@ -81,20 +60,17 @@
         img.className = "slide";
         img.alt = "";
         img.draggable = false;
-        img.width = 1440;
-        img.height = 729;
+        img.width = 1280;
+        img.height = 648;
         img.src = "data:image/jpeg;base64," + b64.trim();
         stage.insertBefore(img, shield);
       });
     }).catch((err) => {
-      status.textContent = "No se pudo cargar la lámina nueva. Recarga con Shift+F5. (" + err.message + ")";
+      status.textContent = "Subiendo lámina nueva… recarga en unos segundos (Shift+F5). " + err.message;
     });
-
-    const block = (event) => event.preventDefault();
+    const block = (e) => e.preventDefault();
     document.addEventListener("contextmenu", block);
     document.addEventListener("dragstart", block);
-    document.addEventListener("selectstart", block);
-
     document.getElementById("fs").onclick = () => {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen();
       else document.exitFullscreen();
