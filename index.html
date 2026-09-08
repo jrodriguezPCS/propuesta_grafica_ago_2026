@@ -25,7 +25,7 @@
       border:0; background:#ffffff22; color:#fff; border-radius:999px;
       padding:8px 12px; font-size:12px; cursor:pointer;
     }
-    .stage { position:relative; width:100%; line-height:0; }
+    .stage { position:relative; width:100%; line-height:0; min-height:70vh; }
     .slide {
       display:block; width:100%; max-width:100%; height:auto;
       pointer-events:none;
@@ -35,6 +35,9 @@
       -webkit-touch-callout:none;
     }
     .shield { position:absolute; inset:0; z-index:2; background:transparent; }
+    .status {
+      padding:48px 24px; text-align:center; color:#0b3a6e; font-size:14px; line-height:1.5;
+    }
   </style>
 </head>
 <body>
@@ -43,50 +46,55 @@
     <button type="button" id="fs">Pantalla completa</button>
   </header>
   <div class="stage" id="stage">
+    <p class="status" id="status">Cargando propuesta actualizada…</p>
     <div class="shield" aria-hidden="true"></div>
   </div>
   <script>
-    const VERSION = "20260908c";
+    const VERSION = "20260908d";
     const parts = [
-      "slides/v2/parte-01.b64",
-      "slides/v2/parte-02.b64",
-      "slides/v2/parte-03.b64",
-      "slides/v2/parte-04.b64",
-      "slides/v2/parte-05.b64",
-      "slides/v2/parte-06.b64"
+      ["slides/v4/p01_0.txt"],
+      ["slides/v4/p02_0.txt", "slides/v4/p02_1.txt"],
+      ["slides/v4/p03_0.txt", "slides/v4/p03_1.txt"],
+      ["slides/v4/p04_0.txt", "slides/v4/p04_1.txt", "slides/v4/p04_2.txt"],
+      ["slides/v4/p05_0.txt", "slides/v4/p05_1.txt"],
+      ["slides/v4/p06_0.txt", "slides/v4/p06_1.txt", "slides/v4/p06_2.txt"],
+      ["slides/v4/p07_0.txt", "slides/v4/p07_1.txt", "slides/v4/p07_2.txt"],
+      ["slides/v4/p08_0.txt", "slides/v4/p08_1.txt", "slides/v4/p08_2.txt"],
+      ["slides/v4/p09_0.txt", "slides/v4/p09_1.txt"],
+      ["slides/v4/p10_0.txt"]
     ];
     const stage = document.getElementById("stage");
     const shield = stage.querySelector(".shield");
-    Promise.all(parts.map((src) =>
-      fetch(src + "?v=" + VERSION, { cache: "no-store" }).then((r) => {
-        if (!r.ok) throw new Error(src);
-        return r.text();
-      })
+    const status = document.getElementById("status");
+
+    Promise.all(parts.map((group) =>
+      Promise.all(group.map((src) =>
+        fetch(src + "?v=" + VERSION, { cache: "no-store" }).then((r) => {
+          if (!r.ok) throw new Error(src + " " + r.status);
+          return r.text();
+        })
+      )).then((chunks) => chunks.join(""))
     )).then((payloads) => {
+      status.remove();
       payloads.forEach((b64) => {
         const img = document.createElement("img");
         img.className = "slide";
         img.alt = "";
         img.draggable = false;
-        img.width = 1920;
-        img.height = 1620;
+        img.width = 1440;
+        img.height = 729;
         img.src = "data:image/jpeg;base64," + b64.trim();
         stage.insertBefore(img, shield);
       });
-    }).catch(() => {
-      const img = document.createElement("img");
-      img.className = "slide";
-      img.alt = "";
-      img.draggable = false;
-      img.width = 1920;
-      img.height = 9720;
-      img.src = "slides/slides/propuesta-grafica.jpg?v=" + VERSION;
-      stage.insertBefore(img, shield);
+    }).catch((err) => {
+      status.textContent = "No se pudo cargar la lámina nueva. Recarga con Shift+F5. (" + err.message + ")";
     });
+
     const block = (event) => event.preventDefault();
     document.addEventListener("contextmenu", block);
     document.addEventListener("dragstart", block);
     document.addEventListener("selectstart", block);
+
     document.getElementById("fs").onclick = () => {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen();
       else document.exitFullscreen();
