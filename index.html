@@ -14,10 +14,9 @@
     header strong { font-size:14px; }
     header span { display:block; font-size:12px; opacity:.85; font-weight:400; }
     header button { border:0; background:#ffffff22; color:#fff; border-radius:999px; padding:8px 12px; font-size:12px; cursor:pointer; }
-    .stage { position:relative; width:100%; line-height:0; min-height:70vh; }
+    .stage { position:relative; width:100%; line-height:0; }
     .slide { display:block; width:100%; height:auto; pointer-events:none; user-select:none; }
     .shield { position:absolute; inset:0; z-index:2; }
-    .status { padding:48px 24px; text-align:center; color:#0b3a6e; font-size:14px; line-height:1.5; }
   </style>
 </head>
 <body>
@@ -25,49 +24,11 @@
     <strong>PCS For All<span>Propuesta Gráfica • Redes y Campañas</span></strong>
     <button type="button" id="fs">Pantalla completa</button>
   </header>
-  <div class="stage" id="stage">
-    <p class="status" id="status">Cargando propuesta actualizada…</p>
+  <div class="stage">
+    <img class="slide" src="slides/slides/propuesta-grafica.jpg?v=20260908f" width="1920" height="9720" alt="Propuesta gráfica PCS For All — redes y campañas" draggable="false">
     <div class="shield" aria-hidden="true"></div>
   </div>
   <script>
-    const VERSION = "20260908e";
-    const parts = [
-      ["slides/v4/p01_0.txt"],
-      ["slides/v4/p02_0.txt","slides/v4/p02_1.txt"],
-      ["slides/v4/p03_0.txt","slides/v4/p03_1.txt","slides/v4/p03_2.txt"],
-      ["slides/v4/p04_0.txt","slides/v4/p04_1.txt","slides/v4/p04_2.txt"],
-      ["slides/v4/p05_0.txt","slides/v4/p05_1.txt"],
-      ["slides/v4/p06_0.txt","slides/v4/p06_1.txt","slides/v4/p06_2.txt"],
-      ["slides/v4/p07_0.txt","slides/v4/p07_1.txt","slides/v4/p07_2.txt"],
-      ["slides/v4/p08_0.txt","slides/v4/p08_1.txt","slides/v4/p08_2.txt"],
-      ["slides/v4/p09_0.txt","slides/v4/p09_1.txt"],
-      ["slides/v4/p10_0.txt"]
-    ];
-    const stage = document.getElementById("stage");
-    const shield = stage.querySelector(".shield");
-    const status = document.getElementById("status");
-    Promise.all(parts.map((group) =>
-      Promise.all(group.map((src) =>
-        fetch(src + "?v=" + VERSION, { cache: "no-store" }).then((r) => {
-          if (!r.ok) throw new Error(src + " " + r.status);
-          return r.text();
-        })
-      )).then((chunks) => chunks.join(""))
-    )).then((payloads) => {
-      status.remove();
-      payloads.forEach((b64) => {
-        const img = document.createElement("img");
-        img.className = "slide";
-        img.alt = "";
-        img.draggable = false;
-        img.width = 1280;
-        img.height = 648;
-        img.src = "data:image/jpeg;base64," + b64.trim();
-        stage.insertBefore(img, shield);
-      });
-    }).catch((err) => {
-      status.textContent = "Subiendo lámina nueva… recarga en unos segundos (Shift+F5). " + err.message;
-    });
     const block = (e) => e.preventDefault();
     document.addEventListener("contextmenu", block);
     document.addEventListener("dragstart", block);
