@@ -3,7 +3,7 @@
 **Redes y campañas · Agosto 2026**  
 Javier Esteban Rodríguez Medina
 
-Visor web de la propuesta gráfica para **PCS For All** (mayorista TI en partes y accesorios). La pieza es una lámina vertical de **1920 × 9720 px** que se escala al 100 % del ancho del dispositivo y crece en altura de forma proporcional.
+Visor web de la propuesta gráfica para **PCS For All** (mayorista TI en partes y accesorios). La pieza es una lámina vertical de **1920 × 11880 px** que se escala al 100 % del ancho del dispositivo y crece en altura de forma proporcional.
 
 [![Ver propuesta](https://img.shields.io/badge/Ver_propuesta-GitHub_Pages-0767B1?style=for-the-badge)](https://jrodriguezpcs.github.io/propuesta_grafica_ago_2026/)
 
@@ -54,11 +54,12 @@ El `index.html` de la raíz es un visor a pantalla completa:
 ├── favicon.svg
 ├── robots.txt
 ├── .nojekyll
+├── Propuesta grafica.jpg               # lámina 1920 × 11880
 └── slides/
     ├── index.html                     # visor alterno
     ├── README.md                      # notas de la pieza
     └── slides/
-        └── propuesta-grafica.jpg      # lámina 1920 × 9720
+        └── Propuesta grafica.jpg      # misma lámina usada por el visor
 ```
 
 ### Ver en local
