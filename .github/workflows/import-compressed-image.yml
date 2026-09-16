@@ -1,0 +1,47 @@
+name: Import compressed image
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-compressed-image.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compressed JPEG
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o "/tmp/Propuesta grafica.jpg" "https://h.uguu.se/fmkfFnFg.jpg"
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          p = Path("/tmp/Propuesta grafica.jpg")
+          data = p.read_bytes()
+          assert data[:2] == b"\xff\xd8", "not a jpeg"
+          assert p.stat().st_size > 1_000_000, p.stat().st_size
+          im = Image.open(p)
+          print(im.size, im.mode, p.stat().st_size)
+          assert im.size == (1920, 11880)
+          PY
+          cp "/tmp/Propuesta grafica.jpg" "Propuesta grafica.jpg"
+          mkdir -p slides/slides
+          cp "/tmp/Propuesta grafica.jpg" "slides/slides/Propuesta grafica.jpg"
+
+      - name: Commit and push
+        run: |
+          git config user.name "jrodriguezPCS"
+          git config user.email "jrodriguez@pcsforall.co"
+          git add "Propuesta grafica.jpg" "slides/slides/Propuesta grafica.jpg"
+          if git diff --cached --quiet; then
+            echo "No image changes"
+            exit 0
+          fi
+          git commit -m "Comprimir Propuesta grafica.jpg (JPEG q92 4:4:4, 1920x11880)"
+          git push
